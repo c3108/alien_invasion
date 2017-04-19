@@ -21,7 +21,7 @@ class Ship():
 		self.center = float(self.rect.centerx)
 		self.vert_center = float(self.rect.centery)
 
-		# Movement flag
+		# Movement flags
 		self.moving_right = False
 		self.moving_left = False
 		self.moving_up = False
@@ -47,3 +47,8 @@ class Ship():
 	def blitme(self):
 		"""Draw teh ship at its current location."""
 		self.screen.blit(self.image, self.rect)
+
+	def center_ship(self):
+		"""Center the ship on the screen."""
+		self.center = self.screen_rect.centerx
+		self.vert_center = self.screen_rect.centery

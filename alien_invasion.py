@@ -6,6 +6,7 @@ from settings import Settings
 from ship import Ship
 from jeff import Jeff
 import game_functions as gf
+from game_stats import GameStats
 
 def run_game():
 	#Initialize game and create a screen object
@@ -18,6 +19,9 @@ def run_game():
 	ship = Ship(ai_settings, screen)
 	# Make a group to store bullets in 
 	bullets = Group()
+	jeff_bullets = Group()
+	aliens = Group()
+	stars = Group()
 
 	# Make a Jeff
 	jeff = Jeff(screen)
@@ -25,18 +29,23 @@ def run_game():
 	# Set the background color.
 	bg_color = (0, 102, 204)
 
+	gf.create_stars(ai_settings, screen, stars)
+	gf.create_fleet(ai_settings, screen, ship, aliens)
+
+	# Create an instance to sotre game statistics.
+	stats = GameStats(ai_settings)
+
 	# Start the main loop for the game
 	while True:
 
-		gf.check_events(ai_settings, screen, ship, bullets)
-		ship.update()
-		bullets.update()
-
-		#Remove bullets that are off of the screen
-		for bullet in bullets.copy():
-			if bullet.rect.bottom <= 0:
-				bullets.remove(bullet)
-		gf.update_screen(ai_settings, screen, ship, bullets, jeff)
+		gf.check_events(ai_settings, screen, ship, bullets, jeff, jeff_bullets)
+		
+		if stats.game_active:
+			ship.update()
+			gf.update_jeff_bullets(ai_settings, aliens, jeff_bullets)
+			gf.update_bullets(ai_settings, aliens, bullets, screen, ship)
+			gf.update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets)
+		gf.update_screen(ai_settings, screen, ship, bullets, aliens, stars, jeff, jeff_bullets)
 
 
 run_game()
