@@ -30,8 +30,6 @@ def run_game():
 	# Make a Jeff
 	jeff = Jeff(screen)
 
-	# Set the background color.
-	bg_color = (0, 102, 204)
 
 	gf.create_stars(ai_settings, screen, stars)
 	gf.create_fleet(ai_settings, screen, ship, aliens)

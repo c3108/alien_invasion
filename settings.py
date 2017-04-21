@@ -14,29 +14,39 @@ class Settings():
 
 
 		# Ship settings
-		self.ship_speed_factor = 5
-		self.vert_ship_speed_factor = 5
 		self.ship_limit = 3
 
 		# Jeff settings
 		self.jeff_limit = 1
 
 		# Bullet Settings
-		self.bullet_speed_factor = 6
 		self.bullet_width = 3
 		self.bullet_height = 15
 		self.bullet_color = 60, 60, 60
 		self.bullets_allowed = 5
 
 		# Jeff Bullet Settings
-		self.jeff_bullet_speed_factor = 3
 		self.jeff_bullet_width = 15
 		self.jeff_bullet_height = 3
 		self.jeff_bullet_color = 255, 0, 0
 		self.jeff_bullets_allowed = 1
 
 		# Alien Settings
+		self.fleet_drop_speed = 15
+		# HOw quickly the game speeds up
+		self.speedup_scale = 1.1
+
+		self.initialize_dynamic_settings()
+
+	def initialize_dynamic_settings(self):
+		"""Initialize settings that change throughout the game."""
+		self.ship_speed_factor = 1.5
+		self.vert_ship_speed_factor = 1.5
+		self.jeff_bullet_speed_factor = 3
+		self.bullet_speed_factor = 3
 		self.alien_speed_factor = 1
-		self.fleet_drop_speed = 50
-		#fleet_direction of 1 represents right; -1 represents left
+
+		# fleet_direction of 1 represents right; -1 represents left
 		self.fleet_direction = 1
+
+
