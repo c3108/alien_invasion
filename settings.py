@@ -8,10 +8,7 @@ class Settings():
 		# Screen settings
 		self.screen_width = 1200
 		self.screen_height = 700
-		self.bg_color = (0, 105, 204)
-		self.margin = 20
-		self.star_number = randint(0,200)
-
+		self.margin = 40
 
 		# Ship settings
 		self.ship_limit = 3
@@ -20,7 +17,7 @@ class Settings():
 		self.jeff_limit = 1
 
 		# Bullet Settings
-		self.bullet_width = 3
+		self.bullet_width = 150
 		self.bullet_height = 15
 		self.bullet_color = 60, 60, 60
 		self.bullets_allowed = 5
@@ -39,6 +36,11 @@ class Settings():
 		self.initialize_dynamic_settings()
 
 	def initialize_dynamic_settings(self):
+		"""Initialize number of stars"""
+		self.star_number = randint(0,200)
+		self.red, self.green, self.blue = 0, 105, 204
+		self.bg_color = (self.red, self.green, self.blue)
+
 		"""Initialize settings that change throughout the game."""
 		self.ship_speed_factor = 1.5
 		self.vert_ship_speed_factor = 1.5
@@ -48,5 +50,25 @@ class Settings():
 
 		# fleet_direction of 1 represents right; -1 represents left
 		self.fleet_direction = 1
+
+	def increase_speed(self):
+		"""Increase speed settings"""
+		self.ship_speed_factor *= self.speedup_scale
+		self.vert_ship_speed_factor *= self.speedup_scale
+		self.bullet_speed_factor *= self.speedup_scale
+		self.alien_speed_factor *= self.speedup_scale
+		self.jeff_bullet_speed_factor *= self.speedup_scale
+
+	def update_background(self):
+		"""Change number of stars with new level"""
+		self.star_number = randint(0,200)
+		"""Update background color"""
+		if self.red > 20:
+			self.red -= 20
+		if self.green > 20:
+			self.green -= 20
+		if self.blue > 20:
+			self.blue -= 20
+		self.bg_color = (self.red, self.green, self.blue)
 
 

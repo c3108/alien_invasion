@@ -23,7 +23,7 @@ def run_game():
 	ship = Ship(ai_settings, screen)
 	# Make a group to store bullets in 
 	bullets = Group()
-	jeff_bullets = Group()
+	jeff_bullets = Group() 
 	aliens = Group()
 	stars = Group()
 
@@ -46,7 +46,7 @@ def run_game():
 			ship.update()
 			gf.update_jeff_bullets(ai_settings, aliens, jeff_bullets)
 			gf.update_bullets(ai_settings, aliens, bullets, screen, ship)
-			gf.update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets)
+			gf.update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets, stars)
 		gf.update_screen(ai_settings, screen, stats, ship, bullets, aliens, stars, jeff, jeff_bullets, play_button)
 
 

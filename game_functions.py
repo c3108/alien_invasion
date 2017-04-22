@@ -22,15 +22,12 @@ def check_events(ai_settings, screen, ship, aliens, bullets, jeff, jeff_bullets,
 		elif event.type == pygame.MOUSEBUTTONDOWN:
 			mouse_x, mouse_y = pygame.mouse.get_pos()
 			check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, 
-	jeff_bullets, mouse_x, mouse_y)
+				jeff_bullets, mouse_x, mouse_y)
 
 def start_game(ai_settings, screen, stats, ship, aliens, bullets, jeff_bullets):
 	"""Start the game when either the play button or letter p is pressed"""
 	#hide the mouse cursor.
 	pygame.mouse.set_visible(False)
-	#reset the game statistics
-	stats.reset_stats()
-	stats.game_active = True
 
 	#Empty the list of aliens and bullets
 	aliens.empty()
@@ -41,15 +38,20 @@ def start_game(ai_settings, screen, stats, ship, aliens, bullets, jeff_bullets):
 	create_fleet(ai_settings, screen, ship, aliens)
 	ship.center_ship()
 
+	#reset the game statistics
+	stats.reset_stats()
+	stats.game_active = True
+
 def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, 
 	jeff_bullets, mouse_x, mouse_y):
 	"""Start a new game when the player clicks Play."""
 	button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
 	if button_clicked and not stats.game_active:
+		ai_settings.initialize_dynamic_settings()
 		start_game(ai_settings, screen, stats, ship, aliens, bullets, jeff_bullets)
 
 def check_keydown_events(event, ai_settings, aliens, screen, stats, ship, bullets, jeff, jeff_bullets):
-	"""Respond to keypresses"""	
+	"""Respond to key presses"""
 	if event.key == pygame.K_RIGHT:
 		#Move the ship to the right.
 		ship.moving_right = True
@@ -91,6 +93,10 @@ def update_screen(ai_settings, screen, stats, ship, bullets, aliens, stars, jeff
 	# Redraw the screen during each pass through the loop
 	screen.fill(ai_settings.bg_color)
 	stars.draw(screen)
+
+	ship.blitme()
+	aliens.draw(screen)
+	
 	# Redraw all bullets behind ship and aliens.
 	for bullet in bullets.sprites():
 		bullet.draw_bullet()
@@ -100,10 +106,6 @@ def update_screen(ai_settings, screen, stats, ship, bullets, aliens, stars, jeff
 	for jeff_bullet in jeff_bullets.sprites():
 		jeff_bullet.draw_bullet()
 	
-
-	ship.blitme()
-
-	aliens.draw(screen)
 	
 	#Draw the play button if the game is inactive.
 	if not stats.game_active:
@@ -123,7 +125,7 @@ def update_bullets(ai_settings, aliens, bullets, screen, ship):
 
 	
 
-def check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen, ship):
+def check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen, ship, stars):
 	"""Check for any bullets that have hit aliens and if so, get rid of the bullets"""
 	collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
 	#jeff_bullets are super bullets and are not destroyed by hitting aliens
@@ -132,9 +134,14 @@ def check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen, s
 	#Check for if all the aliens have been destroyed, if so, remove remaining bullets and
 	# create a new fleet
 	if len(aliens) == 0:
+		ship.center_ship()
 		bullets.empty()
 		jeff_bullets.empty()
+		stars.empty()
+		ai_settings.increase_speed()
+		ai_settings.update_background()
 		create_fleet(ai_settings, screen, ship, aliens)
+		create_stars(ai_settings, screen, stars)
 
 def fire_bullets(ai_settings, screen, ship, bullets):
 	"""Create a new bullet and add it to the bullets group"""
@@ -201,7 +208,7 @@ def fire_jeff_bullets(ai_settings, screen, jeff, jeff_bullets):
 	if len(jeff_bullets) < ai_settings.jeff_bullets_allowed:
 		jeff_bullets.add(new_jeff_bullet)
 
-def update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets):
+def update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets, stars):
 	"""Update the position of all aliens in the fleet"""
 	check_fleet_edges(ai_settings, aliens)
 	aliens.update()
@@ -213,7 +220,7 @@ def update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_
 	elif pygame.sprite.spritecollideany(jeff, aliens):
 		print("Jeff hit!!! Ouchie!")
 
-	check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen, ship)
+	check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen, ship, stars)
 	#Check for aliens hitting the bottom of the screen
 	check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets, jeff_bullets)
 
@@ -236,17 +243,23 @@ def ship_hit(ai_settings, stats, screen, ship, aliens, bullets, jeff_bullets):
 		#Decrement  ships left
 		stats.ships_left -=1 
 
+		#Make sure that bullets can't be fired before starting new round
 		# Empty the list of aliens and bullets.
+		
 		aliens.empty()
 		bullets.empty()
 		jeff_bullets.empty()
-
 		# Create a new fleet and center the ship.
 		create_fleet(ai_settings, screen, ship, aliens)
 		ship.center_ship()
+		#Need this update to get the ship coordinates fixed for space bar 
+		#hits occuring right when the game goes active for bullet to fire
+		#correctly
+		ship.update()
 
 		# Pause 
-		sleep(0.5)
+		sleep(2.0)
+	
 	else:
 		stats.game_active = False
 		pygame.mouse.set_visible(True)
