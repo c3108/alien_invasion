@@ -87,12 +87,15 @@ def check_keyup_events(event, ship):
 	if event.key == pygame.K_DOWN:
 		ship.moving_down = False
 
-def update_screen(ai_settings, screen, stats, ship, bullets, aliens, stars, jeff, jeff_bullets, play_button):
+def update_screen(ai_settings, screen, stats, sb, ship, bullets, aliens, stars, jeff, jeff_bullets, play_button):
 	"""Update images on the screen and flip the screen"""
 
 	# Redraw the screen during each pass through the loop
 	screen.fill(ai_settings.bg_color)
 	stars.draw(screen)
+
+	#Draw the score information
+	sb.show_score()
 
 	ship.blitme()
 	aliens.draw(screen)
@@ -106,6 +109,7 @@ def update_screen(ai_settings, screen, stats, ship, bullets, aliens, stars, jeff
 	for jeff_bullet in jeff_bullets.sprites():
 		jeff_bullet.draw_bullet()
 	
+
 	
 	#Draw the play button if the game is inactive.
 	if not stats.game_active:

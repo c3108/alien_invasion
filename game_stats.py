@@ -12,4 +12,5 @@ class GameStats():
 		"""Initialize statistics that change during the game"""
 		self.ships_left = self.ai_settings.ship_limit
 		self.jeffs_left = self.ai_settings.jeff_limit
+		self.score = 0
 

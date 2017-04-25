@@ -8,6 +8,7 @@ from jeff import Jeff
 import game_functions as gf
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 
 def run_game():
 	#Initialize game and create a screen object
@@ -34,20 +35,24 @@ def run_game():
 	gf.create_stars(ai_settings, screen, stars)
 	gf.create_fleet(ai_settings, screen, ship, aliens)
 
-	# Create an instance to sotre game statistics.
+	# Create an instance to store game statistics snd create a scoreboard..
 	stats = GameStats(ai_settings)
+	sb = Scoreboard(ai_settings, screen, stats)
+
 
 	# Start the main loop for the game
 	while True:
 
-		gf.check_events(ai_settings, screen, ship, aliens, bullets, jeff, jeff_bullets, stats, play_button)
+		gf.check_events(ai_settings, screen, ship, aliens, bullets, jeff, 
+			jeff_bullets, stats, play_button)
 		
 		if stats.game_active:
 			ship.update()
 			gf.update_jeff_bullets(ai_settings, aliens, jeff_bullets)
 			gf.update_bullets(ai_settings, aliens, bullets, screen, ship)
 			gf.update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets, stars)
-		gf.update_screen(ai_settings, screen, stats, ship, bullets, aliens, stars, jeff, jeff_bullets, play_button)
+		gf.update_screen(ai_settings, screen, stats, sb, ship, bullets, 
+			aliens, stars, jeff, jeff_bullets, play_button)
 
 
 run_game()
