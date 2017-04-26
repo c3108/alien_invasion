@@ -50,7 +50,7 @@ def run_game():
 			ship.update()
 			gf.update_jeff_bullets(ai_settings, aliens, jeff_bullets)
 			gf.update_bullets(ai_settings, aliens, bullets, screen, ship)
-			gf.update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets, stars)
+			gf.update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets, stars, sb )
 		gf.update_screen(ai_settings, screen, stats, sb, ship, bullets, 
 			aliens, stars, jeff, jeff_bullets, play_button)
 

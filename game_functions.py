@@ -42,6 +42,7 @@ def start_game(ai_settings, screen, stats, ship, aliens, bullets, jeff_bullets):
 	stats.reset_stats()
 	stats.game_active = True
 
+
 def check_play_button(ai_settings, screen, stats, play_button, ship, aliens, bullets, 
 	jeff_bullets, mouse_x, mouse_y):
 	"""Start a new game when the player clicks Play."""
@@ -74,6 +75,7 @@ def check_keydown_events(event, ai_settings, aliens, screen, stats, ship, bullet
 		sys.exit()
 	elif event.key == pygame.K_p:
 		#start the game using the p key
+		ai_settings.initialize_dynamic_settings()
 		start_game(ai_settings, screen, stats, ship, aliens, bullets, jeff_bullets)
 
 def check_keyup_events(event, ship):
@@ -87,7 +89,8 @@ def check_keyup_events(event, ship):
 	if event.key == pygame.K_DOWN:
 		ship.moving_down = False
 
-def update_screen(ai_settings, screen, stats, sb, ship, bullets, aliens, stars, jeff, jeff_bullets, play_button):
+def update_screen(ai_settings, screen, stats, sb, ship, 
+	bullets, aliens, stars, jeff, jeff_bullets, play_button):
 	"""Update images on the screen and flip the screen"""
 
 	# Redraw the screen during each pass through the loop
@@ -95,6 +98,7 @@ def update_screen(ai_settings, screen, stats, sb, ship, bullets, aliens, stars, 
 	stars.draw(screen)
 
 	#Draw the score information
+	sb.prep_score()
 	sb.show_score()
 
 	ship.blitme()
@@ -108,8 +112,6 @@ def update_screen(ai_settings, screen, stats, sb, ship, bullets, aliens, stars, 
 	
 	for jeff_bullet in jeff_bullets.sprites():
 		jeff_bullet.draw_bullet()
-	
-
 	
 	#Draw the play button if the game is inactive.
 	if not stats.game_active:
@@ -128,12 +130,22 @@ def update_bullets(ai_settings, aliens, bullets, screen, ship):
 			bullets.remove(bullet)
 
 	
-
-def check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen, ship, stars):
+def check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen, 
+	ship, stars, stats, sb):
 	"""Check for any bullets that have hit aliens and if so, get rid of the bullets"""
 	collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+	if collisions:
+		for aliens in collisions.values():
+			stats.score += ai_settings.alien_points * len(aliens)
+			sb.prep_score()
+			check_high_score(stats, sb)
 	#jeff_bullets are super bullets and are not destroyed by hitting aliens
 	collisions = pygame.sprite.groupcollide(jeff_bullets, aliens, False, True)
+	if collisions:
+		for aliens in collisions.values():
+			stats.score += ai_settings.alien_points * len(aliens)
+			sb.prep_score()
+			check_high_score(stast, sb)
 	#Destroy existing bullets and create new fleet.
 	#Check for if all the aliens have been destroyed, if so, remove remaining bullets and
 	# create a new fleet
@@ -212,7 +224,7 @@ def fire_jeff_bullets(ai_settings, screen, jeff, jeff_bullets):
 	if len(jeff_bullets) < ai_settings.jeff_bullets_allowed:
 		jeff_bullets.add(new_jeff_bullet)
 
-def update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets, stars):
+def update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_bullets, stars, sb):
 	"""Update the position of all aliens in the fleet"""
 	check_fleet_edges(ai_settings, aliens)
 	aliens.update()
@@ -224,7 +236,7 @@ def update_aliens(ai_settings, stats, screen, ship, jeff, aliens, bullets, jeff_
 	elif pygame.sprite.spritecollideany(jeff, aliens):
 		print("Jeff hit!!! Ouchie!")
 
-	check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen, ship, stars)
+	check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen, ship, stars, stats, sb)
 	#Check for aliens hitting the bottom of the screen
 	check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets, jeff_bullets)
 
@@ -277,6 +289,10 @@ def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets, jeff_
 			ship_hit(ai_settings, stats, screen, ship, aliens, bullets, jeff_bullets)
 			break
 
-
+def check_high_score(stats, sb):
+	"""Check to see if there is a new high score"""
+	if stats.score > stats.high_score:
+		stats.high_score = stats.score
+		sb.prep_high_score()
 
 
