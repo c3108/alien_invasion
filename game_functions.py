@@ -156,6 +156,8 @@ def check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen,
 		stars.empty()
 		ai_settings.increase_speed()
 		ai_settings.update_background()
+		stats.level += 1
+		sb.prep_level()
 		create_fleet(ai_settings, screen, ship, aliens)
 		create_stars(ai_settings, screen, stars)
 
