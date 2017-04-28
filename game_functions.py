@@ -83,9 +83,9 @@ def check_keydown_events(event, ai_settings, aliens, screen, stats, sb, ship, bu
 		start_game(ai_settings, screen, stats, sb, ship, aliens, bullets, jeff_bullets)
 	elif event.key == pygame.K_r:
 		#Clear the high score record
-		reset_high_score(sb)
+		reset_high_score(stats, sb)
 
-def reset_high_score(sb):
+def reset_high_score(stats, sb):
 	stats.high_score = 0
 	sb.prep_high_score()
 	filename = 'ai_high_scores.txt'
