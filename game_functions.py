@@ -86,6 +86,7 @@ def check_keydown_events(event, ai_settings, aliens, screen, stats, sb, ship, bu
 		reset_high_score(stats, sb)
 
 def reset_high_score(stats, sb):
+	"""Reset the stored high score to 0"""
 	stats.high_score = 0
 	sb.prep_high_score()
 	filename = 'ai_high_scores.txt'
@@ -93,12 +94,11 @@ def reset_high_score(stats, sb):
 		file_object.write(str(0))
 
 def check_and_store_high_score(stats):
+	"""check the high score stored in the txt and write over it if new score is higher"""
 	filename = 'ai_high_scores.txt'
 	with open(filename) as file_object:
 		legacy_high_score = int(file_object.readline())
-		print("Legacy_high_score = " + str(legacy_high_score))
 	if stats.high_score > legacy_high_score:
-		print(stats.high_score)
 		with open(filename, 'w') as file_object:
 			file_object.write(str(stats.high_score))
 
@@ -159,15 +159,15 @@ def check_alien_collisions(ai_settings, aliens, bullets, jeff_bullets, screen,
 	"""Check for any bullets that have hit aliens and if so, get rid of the bullets"""
 	collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
 	if collisions:
-		for aliens in collisions.values():
-			stats.score += ai_settings.alien_points * len(aliens)
+		for aliens_ship in collisions.values():
+			stats.score += ai_settings.alien_points * len(aliens_ship)
 			sb.prep_score()
 			check_high_score(stats, sb)
 	#jeff_bullets are super bullets and are not destroyed by hitting aliens
-	collisions = pygame.sprite.groupcollide(jeff_bullets, aliens, False, True)
-	if collisions:
-		for aliens in collisions.values():
-			stats.score += ai_settings.alien_points * len(aliens)
+	collisions_jeff = pygame.sprite.groupcollide(jeff_bullets, aliens, False, True)
+	if collisions_jeff:
+		for aliens_jeff in collisions_jeff.values():
+			stats.score += ai_settings.alien_points * len(aliens_jeff)
 			sb.prep_score()
 			check_high_score(stats, sb)
 	#Destroy existing bullets and create new fleet.
