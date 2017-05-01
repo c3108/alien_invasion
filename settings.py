@@ -17,7 +17,7 @@ class Settings():
 		self.jeff_limit = 1
 
 		# Bullet Settings
-		self.bullet_width = 5
+		self.bullet_width = 3
 		self.bullet_height = 15
 		self.bullet_color = 60, 60, 60
 		self.bullets_allowed = 5
@@ -45,8 +45,8 @@ class Settings():
 		self.bg_color = (self.red, self.green, self.blue)
 
 		"""Initialize settings that change throughout the game."""
-		self.ship_speed_factor = 1.5
-		self.vert_ship_speed_factor = 1.5
+		self.ship_speed_factor = 2
+		self.vert_ship_speed_factor = 2
 		self.jeff_bullet_speed_factor = 3
 		self.bullet_speed_factor = 3
 		self.alien_speed_factor = 2
